@@ -5,13 +5,15 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "build":"tsc",
-    "start":"node dist/index.js"
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "author": "DiegonzalezDev",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.21.1"
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "mongoose": "^8.8.2"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
