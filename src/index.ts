@@ -1,3 +1,4 @@
+import colors from 'colors'
 import server from './server'
 
 
@@ -5,5 +6,9 @@ import server from './server'
 const port = process.env.PORT || 4000;
 
 server.listen(port, () => {
-  console.log("Servidor funcionando en el puerto:", port);
+  console.log(colors.bgCyan.yellow.bold(`Servidor funcionando en el puerto: ${port} 🚀`));
 });
+
+
+
+

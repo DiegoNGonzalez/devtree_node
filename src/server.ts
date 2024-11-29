@@ -8,7 +8,6 @@ import { connectDB } from "./config/db";
 const app = express();
 
 connectDB()
-
 //Leer datos de forms
 
 app.use(express.json())
