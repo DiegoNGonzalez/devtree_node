@@ -1,14 +1,30 @@
 import { Link } from "react-router-dom";
-import {useForm} from 'react-hook-form'
+import { useForm } from 'react-hook-form'
+import axios from 'axios'
+import type { RegisterForm } from '../types'
 import ErrorMessage from "../components/ErrorMessage";
 
 export default function RegisterView() {
 
-    const {register,watch,formState:{errors}, handleSubmit} = useForm()
+  const initialValue = {
+    name: '',
+    email: '',
+    handle: '',
+    password: '',
+    password_confirmation: ''
+  }
+  const { register, watch, formState: { errors }, handleSubmit } = useForm<RegisterForm>({ defaultValues: initialValue })
 
-    const handleRegister=()=>{
-        console.log('Registrando...')
+  const handleRegister = async (formData: RegisterForm) => {
+    try {
+      const response = await axios.post('http://localhost:4000/auth/register', formData)
+      console.log(response)
+    } catch (error) {
+      console.log(error)
     }
+  }
+
+  const password = watch('password')
 
   return (
     <>
@@ -26,7 +42,7 @@ export default function RegisterView() {
             type="text"
             placeholder="Tu Nombre"
             className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
-            {...register('name', {required:'El  nombre es obligatorio.'})}
+            {...register('name', { required: 'El  nombre es obligatorio.' })}
           />
           {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
         </div>
@@ -39,7 +55,13 @@ export default function RegisterView() {
             type="email"
             placeholder="Email de Registro"
             className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
-            {...register('email', {required:'El email es obligatorio.'})}
+            {...register('email', {
+              required: 'El email es obligatorio.',
+              pattern: {
+                value: /\S+@\S+\.\S+/,
+                message: "E-mail no válido",
+              }
+            })}
           />
           {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
         </div>
@@ -52,7 +74,7 @@ export default function RegisterView() {
             type="text"
             placeholder="Nombre de usuario: sin espacios"
             className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
-            {...register('handle', {required:'El handle es obligatorio.'})}
+            {...register('handle', { required: 'El handle es obligatorio.' })}
           />
           {errors.handle && <ErrorMessage>{errors.handle.message}</ErrorMessage>}
         </div>
@@ -65,9 +87,15 @@ export default function RegisterView() {
             type="password"
             placeholder="Password de Registro"
             className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
-            {...register('password', {required:'El password es obligatorio.'})}
+            {...register('password', {
+              required: 'El password es obligatorio.',
+              minLength: {
+                value: 8,
+                message: "El password es minimo de 8 caracteres"
+              }
+            })}
           />
-            {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
+          {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
         </div>
 
         <div className="grid grid-cols-1 space-y-3">
@@ -78,13 +106,16 @@ export default function RegisterView() {
             Repetir Password
           </label>
           <input
-            id="password"
+            id="password_confirmation"
             type="password"
             placeholder="Repetir Password"
             className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
-            {...register('password_confirmation', {required:'El password es obligatorio.', validate: (value) => value === watch('password') || 'Las contraseñas no coinciden'})}
+            {...register('password_confirmation', {
+              required: 'El password es obligatorio.',
+              validate: (value) => value === password || 'Las contraseñas no coinciden'
+            })}
           />
-            {errors.password_confirmation && <ErrorMessage>{errors.password_confirmation.message}</ErrorMessage>}
+          {errors.password_confirmation && <ErrorMessage>{errors.password_confirmation.message}</ErrorMessage>}
         </div>
 
         <input
